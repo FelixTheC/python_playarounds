@@ -1,0 +1,20 @@
+def include_tests_from_directory(directory: str):
+    """
+    The test files in that directory should always in that format test_*.py
+    all Testclasses in that file should contain Test
+    """
+    import os
+    import glob
+    from foo.settings import BASE_DIR
+
+    actions = {}
+    path = os.path.join(BASE_DIR, 'app_dir', 'test', directory)
+    for file in glob.glob(f'{path}/test_*.py'):
+        try:
+            exec(open(file).read(), actions)
+        except ModuleNotFoundError as e:
+            print(file, e.name)
+
+    filtered_actions = {k: v for k, v in actions.items() if 'Test' in k}
+    for test in filtered_actions.values():
+        test()
